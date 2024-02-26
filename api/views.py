@@ -12,9 +12,10 @@ def getListings(request):
     serializer = ListingSerializer(listings,many=True)
     return Response(serializer.data)
     
-
+@api_view(['GET'])
 def getListing(request,pk):
     listing = Listing.objects.get(id=pk)
+    images = listing.image_set.all()
     serializer = ListingSerializer(listing,many=False)
     return Response(serializer.data)
-    
+
