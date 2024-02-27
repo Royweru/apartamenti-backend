@@ -6,16 +6,32 @@ from .serializers import ListingSerializer
 from .models import Listing
 # Create your views here.
 
-@api_view(['GET'])
-def getListings(request):
-    listings = Listing.objects.all()
-    serializer = ListingSerializer(listings,many=True)
-    return Response(serializer.data)
+@api_view(['GET','POST'])
+def api_Listings(request):
+    if request.method == 'GET':
+        listings = Listing.objects.all()
+        serializer = ListingSerializer(listings,many=True)
+        return Response(serializer.data)
     
-@api_view(['GET'])
-def getListing(request,pk):
+    if request.method =='POST':
+        serializer = ListingSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        
+@api_view(['GET','PUT'])
+def individual_Listing(request,pk):
     listing = Listing.objects.get(id=pk)
-    images = listing.image_set.all()
-    serializer = ListingSerializer(listing,many=False)
-    return Response(serializer.data)
+    if request.method=='GET':
+        serializer = ListingSerializer(listing,many=False)
+        return Response(serializer.data)
+        
+     
+    if request.method=="PUT":
+        serializer = ListingSerializer(listing,data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+   
 
+ 
